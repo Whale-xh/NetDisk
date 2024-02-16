@@ -683,3 +683,18 @@ typedef struct {
 } HashSet;
 ```
 
+## 15.日志系统
+
+```c
+#define LOG_WRITE(msg)                                                                                                                                                                       \
+    {                                                                                                                                                                                        \
+        int fd = open("/var/log/syslog", O_WRONLY | O_APPEND | O_CREAT, 0666);                                                                                                               \
+        time_t now = time(NULL);                                                                                                                                                             \
+        time(&now);                                                                                                                                                                          \
+        struct tm *localTime = localtime(&now);                                                                                                                                              \
+        char message[4096] = {0};                                                                                                                                                            \
+        sprintf(message, "[%d-%d-%d][%d:%d:%d]: %s\n", localTime->tm_year + 1900, localTime->tm_mon + 1, localTime->tm_mday, localTime->tm_hour, localTime->tm_min, localTime->tm_sec, msg); \
+        write(fd, message, strlen(message));                                                                                                                                                 \
+        close(fd);                                                                                                                                                                           \
+	}
+```
