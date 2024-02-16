@@ -1,0 +1,60 @@
+#include "server.h"
+
+/* typedef struct{ */
+/*     Entry* entries[TABLE_SIZE]; */
+/* }HashTable; */
+
+//初始化哈希表
+HashTable *create_hash_table()
+{
+    HashTable *table = (HashTable *)malloc(sizeof(HashTable));
+    for (int i = 0; i < TABLE_SIZE; ++i)
+    {
+        table->entries[i] = NULL;
+    }
+    return table;
+}
+
+void insert_table(HashTable *table, int key, int value)
+{
+    int index = hash_function(key);
+    Entry *entry = (Entry *)malloc(sizeof(Entry));
+    entry->key = key;
+    entry->value = value;
+    entry->next = table->entries[index];
+    table->entries[index] = entry;
+}
+
+int search_table(HashTable *table, int key, int *pvalue)
+{
+    int index = hash_function(key);
+    Entry *current = table->entries[index];
+    while (current != NULL)
+    {
+        if (current->key == key)
+        {
+            *pvalue = current->value;
+            return 0;
+        }
+        current = current->next;
+    }
+    return -1; //当前哈希表没有fd
+}
+
+// int main(void){
+//     HashTable* table = create_hash_table();
+//     insert_table(table,2,4);
+//     insert_table(table,1,2);
+//     insert_table(table,3,6);
+//
+//     int val;
+//     int ret = search_table(table,3,&val);
+//     printf("ret = %d , key = 3 , val = %d \n",ret,val);
+//
+//     remove_element((HashSet*)table,3);
+//
+//     val=0;
+//     ret = search_table(table,3,&val);
+//     printf("ret = %d , key = 3 , val = %d \n",ret,val);
+//     return 0;
+// }
